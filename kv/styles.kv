@@ -1,0 +1,38 @@
+#:import dp kivy.metrics.dp
+#:import sp kivy.metrics.sp
+#:import constants utils.constants
+
+# ---------------------------------------------------------------- étiquettes
+<MediLabel@Label>:
+    color: constants.TEXT
+    font_size: sp(14)
+
+<TitleLabel@MediLabel>:
+    font_size: sp(21)
+    bold: True
+
+<HeaderLabel@MediLabel>:
+    font_size: sp(16)
+    bold: True
+
+<DimLabel@MediLabel>:
+    color: constants.TEXT_DIM
+    font_size: sp(12)
+
+<WrapLabel@DimLabel>:
+    text_size: self.size
+    halign: 'left'
+    valign: 'top'
+
+<ValueLabel@MediLabel>:
+    font_size: sp(26)
+    bold: True
+
+# ---------------------------------------------------------------- écrans
+<MediScreen>:
+    canvas.before:
+        Color:
+            rgba: constants.BACKGROUND
+        Rectangle:
+            pos: self.pos
+            size: self.size

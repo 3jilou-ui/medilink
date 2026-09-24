@@ -1,0 +1,77 @@
+name: Build Android APK
+
+# Construit l'APK MediLink (debug) sur un runner Linux avec buildozer,
+# puis le publie comme artefact téléchargeable.
+#
+# Déclenchement :
+#   - push sur main / master
+#   - création d'une release
+#   - manuellement via l'onglet "Actions" (workflow_dispatch)
+
+on:
+  push:
+    branches: [ main, master ]
+  release:
+    types: [ created ]
+  workflow_dispatch:
+
+# Une seule build à la fois par branche (annule les anciennes).
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Installer Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Dépendances système (buildozer / python-for-android)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git zip unzip \
+            build-essential \
+            automake autoconf libtool \
+            pkg-config \
+            zlib1g-dev \
+            libssl-dev \
+            libffi-dev \
+            libncurses5-dev \
+            openjdk-17-jdk
+
+      - name: Installer buildozer + cython
+        run: |
+          python -m pip install --upgrade pip
+          pip install buildozer==1.5.0 cython==0.29.36
+
+      # Le premier build télécharge Android SDK/NDK (~plusieurs Go) dans
+      # ~/.buildozer. On le met en cache pour accélérer les builds suivants.
+      - name: Cache buildozer (SDK / NDK / python-for-android)
+        uses: actions/cache@v4
+        with:
+          path: ~/.buildozer
+          key: buildozer-${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
+          restore-keys: |
+            buildozer-${{ runner.os }}-
+
+      - name: Construire l'APK (debug)
+        run: buildozer android debug
+
+      - name: Lister les APK produits
+        run: ls -lh bin/
+
+      - name: Publier l'APK comme artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: medilink-debug-apk
+          path: bin/*.apk
+          if-no-files-found: error
+          retention-days: 30
