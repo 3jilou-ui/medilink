@@ -27,6 +27,12 @@ android.minapi = 21
 # Accepter les licences SDK de façon non interactive (nécessaire en CI).
 android.accept_sdk_license = True
 
+# Correctif p4a (kivy/python-for-android#3364) : pip 25.3 corrompt le venv de
+# build lors de `pip install -U pip` (ImportError BuildDependencyInstallError).
+# On épingle p4a au commit develop qui corrige cette étape.
+p4a.branch = develop
+p4a.commit = d2ee8c54d9d42375a95f18159e950a119671cf63
+
 # Notifications locales (alertes critiques) : via plyer plus tard.
 # Vibreur : retours d'urgence.
 # Internet : uniquement pour joindre le backend MediLink (proxy Gemini).
