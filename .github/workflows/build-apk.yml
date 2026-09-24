@@ -22,7 +22,9 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # ubuntu-22.04 : autoconf/libtool compatibles avec la recette libffi de
+    # python-for-android (ubuntu-latest = 24.04 casse autoreconf).
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout du code
