@@ -24,6 +24,9 @@ android.permissions = BLUETOOTH,BLUETOOTH_ADMIN,BLUETOOTH_CONNECT,BLUETOOTH_SCAN
 android.api = 33
 android.minapi = 21
 
+# Architectures : ARM (téléphones réels) + x86_64 (émulateur Android Studio).
+android.archs = arm64-v8a, armeabi-v7a, x86_64
+
 # Accepter les licences SDK de façon non interactive (nécessaire en CI).
 android.accept_sdk_license = True
 
