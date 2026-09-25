@@ -5,6 +5,7 @@ from kivy.app import App
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.metrics import dp
+from kivy.utils import platform
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager
 
@@ -35,8 +36,11 @@ KV_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(
 
 class MediLinkApp(App):
     def build(self):
-        Window.size = (config.WINDOW_WIDTH, config.WINDOW_HEIGHT)
-        Window.minimum_width, Window.minimum_height = 320, 480
+        # Sur Android le système possède la surface : forcer Window.size y
+        # réduit l'app à un rectangle 390x844 ancré en bas à gauche.
+        if platform != "android":
+            Window.size = (config.WINDOW_WIDTH, config.WINDOW_HEIGHT)
+            Window.minimum_width, Window.minimum_height = 320, 480
         self.title = config.APP_NAME
         Builder.load_file(KV_PATH)
 
